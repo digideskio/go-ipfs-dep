@@ -1,6 +1,8 @@
 var path = require('path')
 var goenv = require('go-platform')
-var version = require('./../package.json').version
+var pkg  = require('./../package.json')
+var version = pkg.goIpfsVersion || pkg.version
+var distHost = require('./../package.json').distHost || 'https://ipfs.io/'
 var request = require('request')
 var gunzip = require('gunzip-maybe')
 var tarFS = require('tar-fs')
@@ -9,10 +11,10 @@ module.exports = function (callback) {
   checkPlatform(goenv) // make sure we can do this.
 
   // hacky hack hack to work around unpublishability
-  version = version.replace(/-[0-9]+/, '')
+  // version = version.replace(/-[0-9]+/, '')
 
-  var filename = 'ipfs_v' + version + '_' + goenv.GOOS + '-' + goenv.GOARCH + '.tar.gz'
-  var url = 'http://dist.ipfs.io/go-ipfs/v' + version + '/go-' + filename
+  var filename = 'ipfs_' + version + '_' + goenv.GOOS + '-' + goenv.GOARCH + '.tar.gz'
+  var url = distHost + '/go-ipfs/' + version + '/go-' + filename
 
   var installPath = path.resolve(__dirname, '..')
 
