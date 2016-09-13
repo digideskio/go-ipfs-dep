@@ -1,6 +1,6 @@
 {
   "name": "go-ipfs-dep",
-  "version": "0.4.4-dev1",
+  "version": "0.4.4-floodsub0",
   "goIpfsVersion": "floodsub-0",
   "distHost": "https://ipfs.io/ipfs/QmP85ihC6kfxRFEAUe2Rp7JvpvEjzF2CmGmE7je3E26Mnk",
   "description": "Install the latest go-ipfs binary",
