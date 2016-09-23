@@ -1,12 +1,12 @@
 {
   "name": "go-ipfs-dep",
-  "version": "0.4.4-floodsub1",
-  "goIpfsVersion": "floodsub-1",
-  "distHost": "https://dist.ipfs.io",
+  "version": "0.4.4-floodsub2",
+  "goIpfsVersion": "floodsub-2",
+  "distHost": "https://ipfs.io",
   "description": "Install the latest go-ipfs binary",
   "main": "src/index.js",
   "scripts": {
-    "install": "node src/bin.js",
+    "install": "node src/bin.js $TARGET_OS",
     "test": "tape test/*.js | tap-spec"
   },
   "repository": {

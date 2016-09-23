@@ -7,13 +7,16 @@ var request = require('request')
 var gunzip = require('gunzip-maybe')
 var tarFS = require('tar-fs')
 
-module.exports = function (callback) {
+module.exports = function (targetOS, callback) {
   checkPlatform(goenv) // make sure we can do this.
+
+  // use the specified OS or use the one we're on atm
+  const TARGET_OS = targetOS || goenv.GOOS
 
   // hacky hack hack to work around unpublishability
   // version = version.replace(/-[0-9]+/, '')
 
-  var filename = 'ipfs_' + version + '_' + goenv.GOOS + '-' + goenv.GOARCH + '.tar.gz'
+  var filename = 'ipfs_' + version + '_' + TARGET_OS + '-' + goenv.GOARCH + '.tar.gz'
   var url = distHost + '/go-ipfs/' + version + '/go-' + filename
 
   var installPath = path.resolve(__dirname, '..')

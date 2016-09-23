@@ -1,2 +1,3 @@
 #!/usr/bin/env node
-require('./')(function () {})
+// first param is the target OS
+require('./')(process.argv[2], function () {})
