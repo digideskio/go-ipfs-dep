@@ -21,6 +21,8 @@ module.exports = function (targetOS, callback) {
 
   var installPath = path.resolve(__dirname, '..')
 
+  console.log("Downloading", filename)
+
   request
     .get(url)
     .pipe(gunzip())
