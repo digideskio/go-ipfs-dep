@@ -1,46 +1,51 @@
 'use strict'
 
-var checkPlatform = require('./checkPlatform')
-var goenv = require('go-platform')
-var pkg = require('./../package.json')
-var version = pkg.goIpfsVersion || pkg.version
-var request = require('request')
-var gunzip = require('gunzip-maybe')
-var path = require('path')
-var tarFS = require('tar-fs')
-var unzip = require('unzip')
+const goenv = require('go-platform')
+const request = require('request')
+const gunzip = require('gunzip-maybe')
+const path = require('path')
+const tarFS = require('tar-fs')
+const unzip = require('unzip')
 
-module.exports = function (callback, targetOS) {
-  callback = callback || noop
-  const TARGET_OS = targetOS || goenv.GOOS
+const pkg = require('./../package.json')
+const version = pkg.goIpfsVersion || 'v' + version.replace(/-[0-9]+/, '')
+const checkPlatform = require('./checkPlatform')
 
-  // make sure we can do this.
-  if (!checkPlatform.isSupportedArchitecture(goenv.GOARCH)) {
-    throw new Error('no binary available for arch: ' + goenv.GOARCH)
+module.exports = function (targetOS, callback) {
+  if (typeof targetOS === 'function') {
+    callback = targetOS
+    targetOS = undefined
   }
 
-  const isWindows = checkPlatform.isWindows(TARGET_OS)
+  const TARGET_OS = targetOS || goenv.GOARCH
+  callback = callback || noop
 
-  // hacky hack hack to work around unpublishability
-  version = version.replace(/-[0-9]+/, '')
+  // make sure we can do this.
+  if (!checkPlatform.isSupportedArchitecture(TARGET_OS)) {
+    return callback(new Error('no binary available for arch: ' + TARGET_OS))
+  }
+
+  const isWindows = checkPlatform.isWindows(goenv.GOOS)
 
   const fileExtension = isWindows ? '.zip' : '.tar.gz'
-  const fileName = 'ipfs_v' + version + '_' + goenv.GOOS + '-' + goenv.GOARCH + fileExtension
-  const url = 'http://dist.ipfs.io/go-ipfs/v' + version + '/go-' + fileName
+  const fileName = 'ipfs_' + version + '_' + goenv.GOOS + '-' + goenv.GOARCH + fileExtension
+  const url = 'http://dist.ipfs.io/go-ipfs/' + version + '/go-' + fileName
   const installPath = path.resolve(__dirname, '..')
   const fileStream = request.get(url)
 
+  console.log('downloading %s to %s', url, installPath)
+
   if (isWindows) {
-    fileStream.pipe(
-      unzip.Extract({ path: installPath })
-      .on('close', callback))
+    fileStream
+      .pipe(unzip.Extract({ path: installPath }))
+      .once('error', callback)
+      .once('close', callback)
   } else {
-    fileStream.pipe(gunzip())
-    .pipe(
-      tarFS
-        .extract(installPath)
-        .on('finish', callback)
-    )
+    fileStream
+      .pipe(gunzip())
+      .pipe(tarFS.extract(installPath))
+      .once('error', callback)
+      .once('finish', callback)
   }
 }
 
