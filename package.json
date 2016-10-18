@@ -7,6 +7,8 @@
   "main": "src/index.js",
   "scripts": {
     "install": "node src/bin.js $TARGET_OS",
+    "lint": "aegir-lint",
+    "coverage": "aegir-coverage",
     "test": "tape test/*.js | tap-spec"
   },
   "repository": {
@@ -16,8 +18,9 @@
   "dependencies": {
     "go-platform": "^1.0.0",
     "gunzip-maybe": "^1.3.1",
-    "request": "^2.70.0",
-    "tar-fs": "^1.12.0"
+    "request": "^2.75.0",
+    "tar-fs": "^1.13.2",
+    "unzip": "^0.1.11"
   },
   "keywords": [
     "ipfs",
@@ -30,7 +33,8 @@
   },
   "homepage": "https://github.com/diasdavid/go-ipfs-dep",
   "devDependencies": {
-    "tap-spec": "^4.1.0",
-    "tape": "^4.2.0"
+    "aegir": "^8.1.2",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.0"
   }
 }
